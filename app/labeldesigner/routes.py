@@ -74,8 +74,10 @@ def get_preview_from_image():
         return response
 
 
-@bp.route('/api/print', methods=['POST', 'GET'])
+@bp.route('/api/print', methods=['POST', 'GET', 'OPTIONS'])
 def print_text():
+    if request.method == 'OPTIONS':
+        return '', 204
     """
     API to print a label
 
