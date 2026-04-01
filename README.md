@@ -4,6 +4,8 @@ This is a web service to print labels on Brother QL label printers.
 
 You need Python 3 for this software to work.
 
+This is a fork of [tbnobody/brother\_ql\_web](https://github.com/tbnobody/brother_ql_web) with additional features (see below).
+
 ![Screenshot](./screenshots/Label-Designer_Desktop.png)
 
 The web interface is [responsive](https://en.wikipedia.org/wiki/Responsive_web_design).
@@ -22,6 +24,17 @@ There's also a screenshot showing [how it looks on a smartphone](./screenshots/L
     * Cut only after the last label
 * Migrated GUI to Bootstrap 4
 * Make preview for round labels.. round
+
+### Extended Features (this fork)
+
+* **CORS support** — allows printing from another website (e.g. [snake-label](https://github.com/socram70/snake-label)); includes OPTIONS preflight handling
+* **Configurable label margins** — set top/bottom/left/right margins individually via `instance/application.py`
+* **Grayscale / black-and-white mode** — toggle how uploaded images are converted before printing
+* **Automatic red-label detection** — the color chooser is hidden for printers that don't support red labels
+* **Gunicorn entry point** — production WSGI server support via `gunicorn_entrypoint.py`
+* **Docker image** — see the [Docker](#docker) section below
+* **Modular Blueprint architecture** — label designer, main route, and error handling separated into Flask Blueprints
+* **Pillow 10 support** — updated image processing pipeline
 
 ### Installation
 
@@ -69,6 +82,24 @@ Copy service file, reload system, enable and start the service
     systemctl daemon-reload
     systemctl enable brother_ql_web
     systemctl start brother_ql_web
+
+### Docker
+
+A pre-built image is available on the GitHub Container Registry:
+
+    docker run -d \
+      -p 8013:8013 \
+      -v /path/to/your/instance:/app/instance \
+      ghcr.io/socram70/brother_ql_web:latest
+
+Create an `instance/application.py` file to configure your printer (see [Configuration file](#configuration-file)).
+For USB printers, also pass the device through:
+
+    docker run -d \
+      -p 8013:8013 \
+      --device /dev/usb/lp0 \
+      -v /path/to/your/instance:/app/instance \
+      ghcr.io/socram70/brother_ql_web:latest
 
 ### Usage
 
